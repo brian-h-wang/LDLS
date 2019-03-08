@@ -10,7 +10,7 @@ LDLS requires no annotated 3D training data, and is capable of performing segmen
 
 Requires Python 3.6+
 
-1. Install the Matterport Mask R-CNN implementation: See [here](https://github.com/matterport/Mask_RCNN).
+1. Install the Matterport Mask R-CNN implementation: See [here](https://github.com/matterport/Mask_RCNN). Also make sure to download mask_rcnn_coco.h5 according to step 4 of the Mask R-CNN setup instructions, and put the file inside the LDLS/mask_rcnn/ directory. 
 2. Install dependencies with `pip install -r`
 
 Additionally, we highly recommend installing the [Point Processing Toolkit](https://github.com/heremaps/pptk) for visualizing results:
@@ -19,8 +19,7 @@ Additionally, we highly recommend installing the [Point Processing Toolkit](http
 
 ## How to use
 
-
-
+See the `demo.ipynb` Jupyter notebook for an example of how to use LDLS.
 
 ## Current work
 
