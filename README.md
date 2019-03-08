@@ -13,8 +13,12 @@ Requires Python 3.6+
 1. Install the Matterport Mask R-CNN implementation: See [here](https://github.com/matterport/Mask_RCNN).
 2. Install dependencies with `pip install -r`
 
+Additionally, we highly recommend installing the [Point Processing Toolkit](https://github.com/heremaps/pptk) for visualizing results:
+
+``pip install pptk``
 
 ## How to use
+
 
 
 
