@@ -19,8 +19,7 @@ Additionally, we highly recommend installing the [Point Processing Toolkit](http
 
 ## How to use
 
-
-
+See the `demo.ipynb` Jupyter notebook for an example of how to use LDLS.
 
 ## Current work
 
