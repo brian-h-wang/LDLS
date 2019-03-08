@@ -1,4 +1,4 @@
-#LDLS: Label Diffusion LiDAR Segmentation
+# LDLS: Label Diffusion LiDAR Segmentation
 
 ![LDLS](readme_assets/kitti_example.png)
 
