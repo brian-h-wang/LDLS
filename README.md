@@ -1,10 +1,12 @@
-# LDLS: Label Diffusion LiDAR Segmentation
+# LDLS: Label Diffusion Lidar Segmentation
 
 ![LDLS](readme_assets/kitti_example.png)
 
-LDLS performs 3D instance segmentation of LiDAR point clouds, by using a pretrained Mask-RCNN model to perform 2D segmentation of an aligned camera image, projecting segmentation masks into 2D, and then performing label diffusion to output final LiDAR point labels.
+LDLS performs 3D instance segmentation of Lidar point clouds, by using a pretrained Mask-RCNN model to perform 2D segmentation of an aligned camera image, projecting segmentation masks into 2D, and then performing label diffusion to output final LiDAR point labels.
 
 LDLS requires no annotated 3D training data, and is capable of performing segmentation of any object class that the 2D image segmentation model is trained to recognize.
+
+ or details on the algorithm, please see our paper, ["LDLS: 3-D Object Segmentation Through Label Diffusion From 2-D Images"](https://ieeexplore.ieee.org/document/8735751), published in the IEEE Robotics and Automation Letters (to be presented at IROS 2019 in Macau).
 
 ## Installation
 
@@ -21,9 +23,14 @@ Additionally, we highly recommend installing the [Point Processing Toolkit](http
 
 See the `demo.ipynb` Jupyter notebook for an example of how to use LDLS.
 
-## Current work
+## Evaluation Data
 
-Current improvements we are making to LDLS include:
+*To be added*
 
-- Implementing GPU acceleration for real-time performance.
-- Writing a ROS node for online point cloud segmentation.
+## Results
+
+See the following videos for demonstrations of LDLS in action:
+
+* [KITTI 64 Residential Road Sequence](https://youtu.be/XlXneiGB5NU)
+* [KITTI 91 Urban Sequence](https://youtu.be/EtLl4KnuM-s)
+* [Campus Mobile Robot Data Collection](https://youtu.be/4azvaDHEcQU)
