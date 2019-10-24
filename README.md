@@ -63,8 +63,8 @@ See the following videos for demonstrations of LDLS in action:
 
 ## Evaluation Data
 
-The manually-labeled ground truth KITTI instance segmentation data used in our experiments as available [here](https://drive.google.com/drive/folders/11rD0Nm65YwvR_unVxxZ--5j00qR8xO_H?usp=sharing).
+The manually-labeled ground truth KITTI instance segmentation data used in our experiments as available [here](https://drive.google.com/drive/folders/11rD0Nm65YwvR_unVxxZ--5j00qR8xO_H?usp=sharing). The 200 evaluation frames are found in `gt_evaluation_val`; the folder `gt_evaluation_train` contains 20 extra annotated frames which can be used for tuning parameters. For consistency with other related methods, validation and training splits are the same as those used in the [Frustum PointNet](https://github.com/charlesq34/frustum-pointnets) and [AVOD](https://github.com/kujason/avod) papers.
 
-The Python annotation tool used to label the data is also available at https://github.com/brian-h-wang/kitti-3d-annotator .
+The Python annotation tool used to label the data is also available at: https://github.com/brian-h-wang/kitti-3d-annotator
 
 Please consider citing our paper if these are useful to you.
