@@ -2,6 +2,9 @@
 Evaluate results.
 """
 
+# from lidarlabel_old import KittiData, KittiObject, KittiGroundTruth, load_labeling_results, load_gt, KITTI_CLASSES, KITTI_TO_COCO
+# from lidarlabel_old import load_avod_labeling_results, load_frustum_labeling_results
+
 from lidar_segmentation.segmentation import LidarSegmentationResult
 from lidar_segmentation.utils import CLASS_NAMES
 
@@ -94,7 +97,7 @@ def get_dont_care_indices(gt):
 def evaluate_semantic_segmentation(results_list, gt_list, range_limit=None,
                                    cp_only=False, filter_ground=False,
                                    return_pr=False, remove_dont_care=False,
-                                   return_pr_iu=False):
+                                   return_pr_iu=False, iteration=None):
     """
     Evaluate labeling result as semantic segmentation (i.e. without considering object instances)
 
@@ -122,7 +125,10 @@ def evaluate_semantic_segmentation(results_list, gt_list, range_limit=None,
     fn_totals = [0 for c in kitti_names]
     for (results, gt) in zip(results_list, gt_list):
         # Get object class labels (not instance labels)
-        results_class_ids = results.class_labels()
+        if iteration is not None:
+            results_class_ids = results.class_labels(iteration)
+        else:
+            results_class_ids = results.class_labels()
         results_class_labels = np.array([CLASS_NAMES[i] for i in results_class_ids])
         gt_class_labels = gt.class_labels
         if len(results_class_labels) != len(gt_class_labels):
@@ -137,7 +143,7 @@ def evaluate_semantic_segmentation(results_list, gt_list, range_limit=None,
             gt_class_labels[all_dont_care] = "BG"
 
         # Set Person_sitting to Pedestrian
-        gt_class_labels[gt_class_labels == "Person_sitting"] = "Pedestrian"
+        # gt_class_labels[gt_class_labels == "Person_sitting"] = "Pedestrian"
 
         if range_limit is not None:
             lidar_points = results.points
@@ -194,7 +200,7 @@ def evaluate_semantic_segmentation(results_list, gt_list, range_limit=None,
 def semantic_tp_fp_fn(results_list, gt_list, range_limit=None,
                                    cp_only=False, filter_ground=False,
                                    return_pr=False, remove_dont_care=False,
-                                   return_pr_iu=False):
+                                   return_pr_iu=False, iteration=None):
     """
     Evaluate labeling result as semantic segmentation (i.e. without considering object instances)
 
@@ -222,7 +228,10 @@ def semantic_tp_fp_fn(results_list, gt_list, range_limit=None,
     fn_totals = [0 for c in kitti_names]
     for (results, gt) in zip(results_list, gt_list):
         # Get object class labels (not instance labels)
-        results_class_ids = results.class_labels()
+        if iteration is None:
+            results_class_ids = results.class_labels()
+        else:
+            results_class_ids = results.class_labels(iteration)
         results_class_labels = np.array([CLASS_NAMES[i] for i in results_class_ids])
         gt_class_labels = gt.class_labels
         if len(results_class_labels) != len(gt_class_labels):
@@ -236,7 +245,7 @@ def semantic_tp_fp_fn(results_list, gt_list, range_limit=None,
             gt_class_labels[all_dont_care] = "BG"
 
         # Set Person_sitting to Pedestrian
-        gt_class_labels[gt_class_labels == "Person_sitting"] = "Pedestrian"
+        # gt_class_labels[gt_class_labels == "Person_sitting"] = "Pedestrian"
 
         if range_limit is not None:
             lidar_points = results.points
@@ -288,6 +297,7 @@ def semantic_tp_fp_fn(results_list, gt_list, range_limit=None,
     else:
         iou_list = [i / u for (i, u) in zip(i_totals, u_totals)]
         return iou_list
+
 def print_iou_results(iou_list, classes=('Car', 'Pedestrian', 'Truck', 'Tram')):
     for (iou, name) in zip(iou_list, classes):
         print("IoU for class %s is %.3f" % (name, iou))
@@ -305,7 +315,8 @@ class InstanceSegmentationResults(object):
 def evaluate_instance_segmentation(results_list, gt_list,
                                    iou_threshold=0.7, range_limit=None,
                                    cp_only=False, filter_ground=False,
-                                   remove_dont_care=False):
+                                   remove_dont_care=False, iteration=None,
+                                   remove_outliers=False):
     """
     Evaluate labeling result as instance segmentation
 
@@ -351,7 +362,10 @@ def evaluate_instance_segmentation(results_list, gt_list,
         #     ranges = np.linalg.norm(results[['x', 'y', 'z']].values,
         #                             axis=1)
         # Get object class labels (not instance labels)
-        results_class_ids = results.class_labels()
+        if iteration is None:
+            results_class_ids = results.class_labels()
+        else:
+            results_class_ids = results.class_labels(iteration)
         results_class_labels = np.array([CLASS_NAMES[i] for i in results_class_ids])
         gt_class_labels = gt.class_labels
 
@@ -371,7 +385,7 @@ def evaluate_instance_segmentation(results_list, gt_list,
         # gt_instance_labels[all_dont_care] = -1
 
         # Set Person_sitting to Pedestrian
-        gt_class_labels[gt_class_labels == "Person_sitting"] = "Pedestrian"
+        # gt_class_labels[gt_class_labels == "Person_sitting"] = "Pedestrian"
 
         if range_limit is not None:
             lidar_points = results.points
@@ -560,7 +574,7 @@ def plot_range_vs_accuracy(results_list, gt_list, filter_ground=False, cp_only=T
         # gt_instance_labels[all_dont_care] = -1
 
         # Set Person_sitting to Pedestrian
-        gt_class_labels[gt_class_labels == "Person_sitting"] = "Pedestrian"
+        # gt_class_labels[gt_class_labels == "Person_sitting"] = "Pedestrian"
 
         # if range_limit is not None:
         #     lidar_points = results.points
@@ -657,4 +671,135 @@ def plot_range_vs_accuracy(results_list, gt_list, filter_ground=False, cp_only=T
     plt.savefig("range_scatter.eps", bbox_inches='tight')
     plt.show()
 
+
+def find_tp_fp_fn(results, gt, kitti_names, coco_names, iou_threshold=0.5,
+                  range_limit=None, filter_ground=False):
+    """
+    
+    Parameters
+    ----------
+    results
+    gt
+    kitti_names
+    coco_names
+    range_limit
+    filter_ground
+
+    Returns
+    -------
+    tuple list, int list, int list
+        Represents (true positives, false positives, false negatives)
+        True positives formatted as (results_index, gt_index) - shows which
+        correctly matched results instances map to which ground truth instances.
+        False positives is list of indices into the results instances,
+        False negatives is list of indices into the gt instances.
+
+    """
+    # if range_limits is not None:
+    #     ranges = np.linalg.norm(results[['x', 'y', 'z']].values,
+    #                             axis=1)
+    # Get object class labels (not instance labels)
+    results_class_ids = results.class_labels
+    results_class_labels = np.array([CLASS_NAMES[i] for i in results_class_ids])
+    gt_class_labels = gt.class_labels
+
+    results_instance_labels = results.instance_labels
+    gt_instance_labels = gt.instance_labels
+
+    # Find indices of lidar points that are in "DontCare" regions
+    # all_dont_care = get_dont_care_indices(gt)
+    # print("Removing %d DontCare, Van, Cyclist points" % np.sum(all_dont_care))
+    # results_class_labels[all_dont_care] = "BG"
+    # gt_class_labels[all_dont_care] = "BG"
+    # results_instance_labels[all_dont_care] = -1
+    # gt_instance_labels[all_dont_care] = -1
+
+    # Set Person_sitting to Pedestrian
+    # gt_class_labels[gt_class_labels == "Person_sitting"] = "Pedestrian"
+    tp_list = []
+    fp_list = []
+    fn_list = []
+
+    if range_limit is not None:
+        lidar_points = results.points
+        ranges = np.linalg.norm(lidar_points, axis=1)
+        in_range = ranges < range_limit
+        results_class_labels = results_class_labels[in_range]
+        results_instance_labels = results_instance_labels[in_range]
+        gt_class_labels = gt_class_labels[in_range]
+        gt_instance_labels = gt_instance_labels[in_range]
+
+    if filter_ground:
+        lidar_points = results.points
+        if range_limit is not None:
+            lidar_points = lidar_points[in_range,:]
+        not_ground = lidar_points[:,2] > GROUND_LEVEL
+        results_class_labels = results_class_labels[not_ground]
+        results_instance_labels = results_instance_labels[not_ground]
+        gt_class_labels = gt_class_labels[not_ground]
+        gt_instance_labels = gt_instance_labels[not_ground]
+
+
+    # For each class C:
+    for i in range(len(kitti_names)):
+        kitti_class = kitti_names[i]
+        coco_class = coco_names[i]
+        # Find which lidar points are labelled as this class in the results,
+        # and in the KITTI ground truth
+
+        # account for KITTI or COCO class labels
+        r_is_class = np.logical_or(results_class_labels == coco_class, results_class_labels == kitti_class)
+        g_is_class = gt_class_labels == kitti_class
+
+        # Find instances of this class, in results and in ground truth
+        r_instances = np.unique(results_instance_labels[r_is_class])
+        g_instances = np.unique(gt_instance_labels[g_is_class])
+
+        n_r = len(r_instances)
+        n_g = len(g_instances)
+
+        # Create IoU matrix
+        # Is n by m, where n is the number of object instances in the segmentation results,
+        # and m is the number of instances in the ground truth
+        iou_matrix = np.zeros((n_r, n_g))
+
+        for row in range(n_r):
+            r_instance = results_instance_labels == r_instances[
+                row]  # Results instance number
+            for col in range(n_g):
+                g_instance = gt_instance_labels == g_instances[
+                    col]  # GT instance number
+                intersection = np.logical_and(r_instance, g_instance)
+                union = np.logical_or(r_instance, g_instance)
+                iou_matrix[row, col] = np.sum(intersection) / np.sum(
+                    union)
+
+        r_matching, g_matching = linear_sum_assignment(
+            cost_matrix=1 - iou_matrix)
+        matching_matrix = np.zeros(iou_matrix.shape, dtype=int)
+
+        tp_count = 0
+
+        for (r, g) in zip(r_matching, g_matching):
+            iou = iou_matrix[r, g]
+            # print("Maximal matching: Matched results %d to GT %d, with iou %.3f" % (r,g,iou))
+            if iou > iou_threshold:
+                matching_matrix[r, g] = 1
+                tp_count += 1
+                tp_list.append((r,g))
+
+        # The number of all-zero rows in the matching matrix is the
+        # number of false positives
+        zero_rows = ~np.any(matching_matrix, axis=1)
+        fp_list = fp_list + list(zero_rows.astype(int))
+        fp_count = np.sum(zero_rows)
+
+        # The number of all-zero columns in the matching matrix is
+        # the number of false negatives (undetected GT objects)
+        zero_cols = ~np.any(matching_matrix, axis=0)
+        fn_count = np.sum(zero_cols)
+
+        tp_totals[i] += tp_count
+        fp_totals[i] += fp_count
+        fn_totals[i] += fn_count
 

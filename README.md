@@ -1,7 +1,5 @@
 # LDLS: Label Diffusion Lidar Segmentation
 
-*To Be Added: Evaluation data, and our GPU-accelerated revised implementation used to generate the results in the final paper*
-
 ![LDLS](readme_assets/kitti_example.png)
 
 LDLS performs 3D instance segmentation of Lidar point clouds, by using a pretrained Mask-RCNN model to perform 2D segmentation of an aligned camera image, projecting segmentation masks into 2D, and then performing label diffusion to output final LiDAR point labels.
@@ -17,7 +15,7 @@ Requires Python 3.6+
 1. Install the Matterport Mask R-CNN implementation: See [here](https://github.com/matterport/Mask_RCNN).
 2. Install dependencies with `pip install -r`
 
-Additionally, we highly recommend installing the [Point Processing Toolkit](https://github.com/heremaps/pptk) for visualizing results:
+The [Point Processing Toolkit](https://github.com/heremaps/pptk) can also be useful for visualizing results:
 
 ``pip install pptk``
 

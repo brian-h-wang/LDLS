@@ -12,7 +12,7 @@ from colorsys import hsv_to_rgb
 
 """
 Reference for visualization:
-https://github.com/navoshta/KITTI-Dataset/blob/master/kitti_demo-dataset.ipynb
+https://github.com/navoshta/KITTI-Dataset/blob/master/kitti-dataset.ipynb
 """
 
 CLASS_NAMES = ['BG', 'person', 'bicycle', 'car', 'motorcycle', 'airplane',

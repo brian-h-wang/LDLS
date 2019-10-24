@@ -9,7 +9,7 @@ Utilities for working with KITTI data files.
 from lidar_segmentation.utils import Projection, load_image
 import numpy as np
 
-from lidar_segmentation.detections import Detections, MaskErode, CLASS_NAMES
+from lidar_segmentation.detections import Detections, CLASS_NAMES
 from scipy.spatial import Delaunay
 
 class KittiProjection(Projection):
@@ -275,3 +275,62 @@ def load_kitti_labels(filename):
                                   rotation_y))
     return objects
 
+class KittiLabelDetections(Detections):
+    """
+    Class for creating detections from KITTI annotation 2D bounding boxes.
+    
+    Considers Person and Car classes only
+    
+    """
+
+    def __init__(self, label_file_path, image_file_path):
+        image = load_image(image_file_path)
+        self.shape = image.shape
+        self.object_labels = load_kitti_labels(label_file_path)
+        self.object_labels = [label for label in self.object_labels
+                              if label.object_type in ['Pedestrian', 'Car']]
+        # KITTI bounding boxes are left, top, right, bottom
+        masks = np.zeros((self.shape[0], self.shape[1],
+                          len(self.object_labels)),
+                         dtype=int)
+        self.class_ids = []
+        for i, label in enumerate(self.object_labels):
+            if label.object_type == 'Pedestrian':
+                self.class_ids.append(CLASS_NAMES.index('person'))
+            elif label.object_type == 'Car':
+                self.class_ids.append(CLASS_NAMES.index('car'))
+            left, top, right, bottom = [int(x) for x in label.bbox]
+            masks[top:bottom, left:right, i] = 1
+        self.masks = masks
+
+    def __len__(self):
+        return len(self.object_labels)
+
+
+class KittiBoxSegmentationResult(object):
+
+    def __init__(self, lidar, kitti_labels, proj):
+        self.labels = kitti_labels
+
+        car = CLASS_NAMES.index('car')
+        pedestrian = CLASS_NAMES.index('person')
+
+        inst = -np.ones(lidar.shape[0], dtype=int)
+        cls = np.zeros(lidar.shape[0], dtype=int)
+
+        for i, label in enumerate(kitti_labels):
+            in_box = check_points_in_box(lidar, proj.inverse_transform(label.box_corners()))
+            if label.object_type == 'Car':
+                inst[in_box] = i
+                cls[in_box] = car
+            elif label.object_type == 'Pedestrian' or label.object_type == 'Person_sitting':
+                inst[in_box] = i
+                cls[in_box] = pedestrian
+        self.inst = inst
+        self.cls = cls
+
+    def instance_labels(self):
+        return self.inst
+
+    def class_labels(self):
+        return self.cls
