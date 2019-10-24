@@ -8,24 +8,6 @@ LDLS requires no annotated 3D training data, and is capable of performing instan
 
 For details on the algorithm, please see our paper, ["LDLS: 3-D Object Segmentation Through Label Diffusion From 2-D Images"](https://ieeexplore.ieee.org/document/8735751), published in the IEEE Robotics and Automation Letters (to be presented at IROS 2019 in Macau).
  
-## Citation
-
-From IEEE Xplore:
-```
-@ARTICLE{8735751,
-author={B. H. {Wang} and W. {Chao} and Y. {Wang} and B. {Hariharan} and K. Q. {Weinberger} and M. {Campbell}},
-journal={IEEE Robotics and Automation Letters},
-title={LDLS: 3-D Object Segmentation Through Label Diffusion From 2-D Images},
-year={2019},
-volume={4},
-number={3},
-pages={2902-2909},
-keywords={Three-dimensional displays;Two dimensional displays;Image segmentation;Laser radar;Sensors;Cameras;Task analysis;Object detection;segmentation and categorization;RGB-D perception},
-doi={10.1109/LRA.2019.2922582},
-ISSN={},
-month={July},}
-```
-
 ## Installation
 
 Requires Python 3.6+
@@ -68,3 +50,21 @@ The manually-labeled ground truth KITTI instance segmentation data used in our e
 The Python annotation tool used to label the data is also available at: https://github.com/brian-h-wang/kitti-3d-annotator
 
 Please consider citing our paper if these are useful to you.
+
+## Citation
+
+From IEEE Xplore:
+```
+@ARTICLE{8735751,
+author={B. H. {Wang} and W. {Chao} and Y. {Wang} and B. {Hariharan} and K. Q. {Weinberger} and M. {Campbell}},
+journal={IEEE Robotics and Automation Letters},
+title={LDLS: 3-D Object Segmentation Through Label Diffusion From 2-D Images},
+year={2019},
+volume={4},
+number={3},
+pages={2902-2909},
+keywords={Three-dimensional displays;Two dimensional displays;Image segmentation;Laser radar;Sensors;Cameras;Task analysis;Object detection;segmentation and categorization;RGB-D perception},
+doi={10.1109/LRA.2019.2922582},
+ISSN={},
+month={July},}
+```
