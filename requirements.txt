@@ -1,7 +1,0 @@
-numpy
-numba
-scipy
-scikit-image
-scikit-learn
-jupyter
-pycocotools
