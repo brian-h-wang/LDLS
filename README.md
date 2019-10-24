@@ -12,16 +12,26 @@ LDLS requires no annotated 3D training data, and is capable of performing segmen
 
 Requires Python 3.6+
 
-1. Install the Matterport Mask R-CNN implementation: See [here](https://github.com/matterport/Mask_RCNN).
-2. Install dependencies with `pip install -r`
+Depends on
+* [Matterport Mask R-CNN implementation](https://github.com/matterport/Mask_RCNN)
+* [CuPy](https://cupy.chainer.org/) for sparse matrix multiplication on the GPU
+* [Numba](https://numba.pydata.org/numba-doc/dev/user/installing.html) for speeding up graph construction using the GPU.
+
+Installing dependencies using conda is recommended, in particular this makes it easier to install Numba with CUDA GPU support. Use the included `environment.yml` file:
+
+``conda env create -f environment.yml``
 
 The [Point Processing Toolkit](https://github.com/heremaps/pptk) can also be useful for visualizing results:
 
 ``pip install pptk``
 
-## How to use
+## Usage
 
 See the `demo.ipynb` Jupyter notebook for an example of how to use LDLS.
+
+If you used conda to install dependencies, activate your ldls conda environment, then run the following command to create an iPython kernel which you can use with the Jupyter notebook:
+
+``ipython kernel install --user --name=LDLS``
 
 ## Evaluation Data
 
