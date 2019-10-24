@@ -21,7 +21,7 @@ Installing dependencies using conda is recommended, in particular this makes it 
 
 ``conda env create -f environment.yml``
 
-The [Point Processing Toolkit](https://github.com/heremaps/pptk) can also be useful for visualizing results:
+The [Point Processing Toolkit](https://github.com/heremaps/pptk) can also be useful for visualizing KITTI lidar point clouds:
 
 ``pip install pptk``
 
