@@ -6,7 +6,7 @@ LDLS performs 3D instance segmentation of lidar point clouds, by using a pretrai
 
 LDLS requires no annotated 3D training data, and is capable of performing instance segmentation of any object class that the 2D image segmentation model is trained to recognize.
 
-For details on the algorithm, please see our paper, ["LDLS: 3-D Object Segmentation Through Label Diffusion From 2-D Images"](https://ieeexplore.ieee.org/document/8735751), published in the IEEE Robotics and Automation Letters (to be presented at IROS 2019 in Macau).
+For details on the algorithm, please see our paper, *"LDLS: 3-D Object Segmentation Through Label Diffusion From 2-D Images"* \[On [IEEE Xplore](https://ieeexplore.ieee.org/document/8735751) and [arxiv](https://arxiv.org/abs/1910.13955)\], published in the IEEE Robotics and Automation Letters (to be presented at IROS 2019 in Macau).
  
 ## Installation
 
